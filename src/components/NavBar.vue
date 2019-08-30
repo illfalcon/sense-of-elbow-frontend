@@ -52,22 +52,22 @@ export default {
           alert(response.body.message)
         }
       }
-    }), response => {
+    }, response => {
       alert('Logout unsuccessful')
-    }
+    })
   }
   },
   mounted () {
     this.$http.get('http://localhost:5000/api/renew').then(response => {
       this.isRefreshing = response.body.isRefreshing;
       console.log(response.body)
-    }), response => {
+    }, response => {
       if (response.body.error) {
         alert(response.body.error)
       } else {
         alert(response.body.message)
       }
-    }
+    })
   }
 }
 </script>

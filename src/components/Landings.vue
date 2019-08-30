@@ -89,9 +89,9 @@ export default {
                     }
                     localStorage.removeItem('token')
                     return false
-                }), response => {
+                }, response => {
                     return false
-                }
+                })
             }
             return false
         }

@@ -49,12 +49,12 @@ export default {
                     this.$emit('login')
                 } else {
                     console.log(response.body)
-                    alert("Login error")
+                    alert(response.body.error || response.body.message)
                 }
-            }), response => {
+            }, response => {
                 console.log(response.body)
-                alert("Login error")
-            }
+                alert(response.body.error || response.body.message)
+            })
         }
     }
 }
