@@ -31,7 +31,7 @@ export default {
     methods: {
         acceptEvent() {
             console.log(this.event.id)
-            this.$http.post('http://localhost:5000/api/set_approved', {id: this.event.id}).then(response => {
+            this.$http.post('http://localhost:5000/api/set_approved', {id: this.event.id}, {headers: {Authentication: localStorage.getItem('token')}}).then(response => {
                 if (response.body.success) {
                     this.$emit('accept-event', this.event)
                 } else {
@@ -42,7 +42,7 @@ export default {
         },
         declineEvent(){
             console.log(this.event.id)
-            this.$http.post('http://localhost:5000/api/set_declined', {id: this.event.id}).then(response => {
+            this.$http.post('http://localhost:5000/api/set_declined', {id: this.event.id}, {headers: {Authentication: localStorage.getItem('token')}}).then(response => {
                 if (response.body.success) {
                     this.$emit('decline-event', this.event)
                 } else {

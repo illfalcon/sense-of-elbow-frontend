@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <NavBar></NavBar>
-    <router-view/>
+    <NavBar @logout='logoutMethod' :login=this.login></NavBar>
+    <router-view @login='loginMethod()'/>
   </div>
 </template>
 
@@ -34,6 +34,17 @@ import NavBar from '@/components/NavBar.vue'
 export default {
   components: {
     NavBar
+  },
+  data() {
+    return {login: localStorage.getItem('token') ? true : false}
+  },
+  methods: {
+    loginMethod() {
+      this.login = true
+    },
+    logoutMethod() {
+      this.login = false
+    }
   }
 }
 </script>

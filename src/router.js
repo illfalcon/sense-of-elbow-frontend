@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Events from './components/Events.vue'
 import Landings from './components/Landings.vue'
+import Login from './components/Login.vue'
 
 Vue.use(Router)
 
@@ -23,6 +24,11 @@ export default new Router({
       path: '/landings',
       name: 'landings',
       component: Landings
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: Login
     }
   ]
 })

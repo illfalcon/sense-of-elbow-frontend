@@ -50,24 +50,50 @@ export default {
             landings: null
         }
     },
+    computed: {
+      loggedIn: () => {
+        return localStorage.getItem('token')
+      }
+    },
     mounted() {
-        this.$http.get('http://localhost:5000/api/landings').then(response => {
-          this.landings = response.body.landings
-        })
+        this.checkToken()
+        if (this.loggedIn) {
+            this.$http.get('http://localhost:5000/api/landings', {headers: {Authentication: localStorage.getItem('token')}}).then(response => {
+            this.landings = response.body.landings
+            })
+        } else {
+            this.$router.push('/login')
+        }
+        
     },
     methods: {
         onSubmit() {
-            this.$http.post('http://localhost:5000/api/landings', {'url': this.url}).then(response => {
+            this.$http.post('http://localhost:5000/api/landings', {'url': this.url}, {headers: {Authentication: localStorage.getItem('token')}}).then(response => {
                 if (response.body.success)
                     this.landings.push(response.body.landing)
                     this.url = ''
             })
         },
         deleteLanding(landing) {
-            this.$http.delete('http://localhost:5000/api/landings', {body: {'id': landing.id}}).then(response => {
+            this.$http.delete('http://localhost:5000/api/landings', {body: {'id': landing.id}, headers: {Authentication: localStorage.getItem('token')}}).then(response => {
                 if (response.body.success)
                     this.landings.splice(this.landings.indexOf(landing), 1)
             })
+        },
+        checkToken() {
+            const token = localStorage.getItem('token')
+            if (token) {
+                this.$http.post('http://localhost:5000/api/login_token', null, {headers: {Authentication: token}}).then(response => {
+                    if (response.body.success) {
+                        return true
+                    }
+                    localStorage.removeItem('token')
+                    return false
+                }), response => {
+                    return false
+                }
+            }
+            return false
         }
     }
 }

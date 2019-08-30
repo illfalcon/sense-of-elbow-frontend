@@ -9,8 +9,11 @@
       <b-navbar-nav>
         <b-nav-item to="/events">События</b-nav-item>
         <b-nav-item to="/landings">Сайты</b-nav-item>
-        <b-button variant="outline-light" v-if="!isRefreshing" @click="refresh">Обновить</b-button>
+        <b-button variant="outline-light" v-if="!isRefreshing" @click="refresh" :disabled="!login">Обновить</b-button>
         <b-button variant="outline-light" v-else disabled>Обновляется</b-button>
+        <b-nav-item v-if="login" right @click="logout">Выйти</b-nav-item>
+        <b-nav-item v-if="!login" to="/login" right>Войти</b-nav-item>
+        <!-- <b-nav-item v-if="!loggedIn" to="/register">Зарегистрироваться</b-nav-item> -->
       </b-navbar-nav>
     </b-collapse>
   </b-navbar>
@@ -20,15 +23,16 @@
 <script>
 import { log } from 'util';
 export default {
+  props: ['login'],
   name: 'NavBar',
   data() {
     return {
-      isRefreshing: false
+      isRefreshing: false,
     }
   },
   methods: {
     refresh() {
-      this.$http.post('http://localhost:5000/api/renew').then(response => {
+      this.$http.post('http://localhost:5000/api/renew', null, {headers: {Authentication: localStorage.getItem('token')}}).then(response => {
         if (response.body.success) {
             this.isRefreshing = true;
         } else {
@@ -36,7 +40,18 @@ export default {
         }
       console.log(response.body)
     })
+    },
+  logout() {
+    this.$http.post('http://localhost:5000/api/logout', null, {headers: {Authentication: localStorage.getItem('token')}}).then(response => {
+      if (response.body.success) {
+        localStorage.removeItem('token')
+        this.$emit('logout')
+        this.$router.push('/login')
+      }
+    }), response => {
+      alert('Logout unsuccessful')
     }
+  }
   },
   mounted () {
     this.$http.get('http://localhost:5000/api/renew').then(response => {

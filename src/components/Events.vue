@@ -33,19 +33,29 @@ export default {
             declinedEvents: null
         }
     },
+    computed: {
+      loggedIn: () => {
+        return localStorage.getItem('token')
+      }
+    },
     mounted() {
-        this.$http.get('http://localhost:5000/api/new_events').then(response => {
+      this.checkToken()
+      if (this.loggedIn) {
+        this.$http.get('http://localhost:5000/api/new_events', {headers: {Authentication: localStorage.getItem('token')}}).then(response => {
           this.newEvents = response.body.events
         })
-        this.$http.get('http://localhost:5000/api/past_events').then(response => {
+        this.$http.get('http://localhost:5000/api/past_events', {headers: {Authentication: localStorage.getItem('token')}}).then(response => {
           this.pastEvents = response.body.events
         })
-        this.$http.get('http://localhost:5000/api/approved_events').then(response => {
+        this.$http.get('http://localhost:5000/api/approved_events', {headers: {Authentication: localStorage.getItem('token')}}).then(response => {
           this.acceptedEvents = response.body.events
         })
-        this.$http.get('http://localhost:5000/api/declined_events').then(response => {
+        this.$http.get('http://localhost:5000/api/declined_events', {headers: {Authentication: localStorage.getItem('token')}}).then(response => {
           this.declinedEvents = response.body.events
         })
+      } else {
+        this.$router.push('/login')
+      }
     },
     methods: {
       acceptEvent(e) {
@@ -55,7 +65,21 @@ export default {
       declineEvent(e) {
         console.log(e)
         this.declinedEvents.unshift(e)  
+      },
+      checkToken() {
+        const token = localStorage.getItem('token')
+        if (token) {
+          this.$http.post('http://localhost:5000/api/login_token', null, {headers: {Authentication: token}}).then(response => {
+            if (response.body.success) {
+              return true
+            }
+            localStorage.removeItem('token')
+            return false
+          }), response => {
+            return false
+          }
+        }
       }
-    }
+    },
 }
 </script>
