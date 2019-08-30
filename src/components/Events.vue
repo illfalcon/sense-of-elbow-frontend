@@ -43,16 +43,40 @@ export default {
       if (this.loggedIn) {
         this.$http.get('http://localhost:5000/api/new_events', {headers: {Authentication: localStorage.getItem('token')}}).then(response => {
           this.newEvents = response.body.events
-        })
+        }), response => {
+      if (response.body.error) {
+        alert(response.body.error)
+      } else {
+        alert(response.body.message)
+      }
+    }
         this.$http.get('http://localhost:5000/api/past_events', {headers: {Authentication: localStorage.getItem('token')}}).then(response => {
           this.pastEvents = response.body.events
-        })
+        }), response => {
+      if (response.body.error) {
+        alert(response.body.error)
+      } else {
+        alert(response.body.message)
+      }
+    }
         this.$http.get('http://localhost:5000/api/approved_events', {headers: {Authentication: localStorage.getItem('token')}}).then(response => {
           this.acceptedEvents = response.body.events
-        })
+        }), response => {
+      if (response.body.error) {
+        alert(response.body.error)
+      } else {
+        alert(response.body.message)
+      }
+    }
         this.$http.get('http://localhost:5000/api/declined_events', {headers: {Authentication: localStorage.getItem('token')}}).then(response => {
           this.declinedEvents = response.body.events
-        })
+        }), response => {
+      if (response.body.error) {
+        alert(response.body.error)
+      } else {
+        alert(response.body.message)
+      }
+    }
       } else {
         this.$router.push('/login')
       }

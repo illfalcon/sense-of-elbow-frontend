@@ -35,8 +35,6 @@ export default {
       this.$http.post('http://localhost:5000/api/renew', null, {headers: {Authentication: localStorage.getItem('token')}}).then(response => {
         if (response.body.success) {
             this.isRefreshing = true;
-        } else {
-          this.showAlert()
         }
       console.log(response.body)
     })
@@ -47,6 +45,12 @@ export default {
         localStorage.removeItem('token')
         this.$emit('logout')
         this.$router.push('/login')
+      } else {
+        if (response.body.error) {
+          alert(response.body.error)
+        } else {
+          alert(response.body.message)
+        }
       }
     }), response => {
       alert('Logout unsuccessful')
@@ -57,7 +61,13 @@ export default {
     this.$http.get('http://localhost:5000/api/renew').then(response => {
       this.isRefreshing = response.body.isRefreshing;
       console.log(response.body)
-    })
+    }), response => {
+      if (response.body.error) {
+        alert(response.body.error)
+      } else {
+        alert(response.body.message)
+      }
+    }
   }
 }
 </script>
